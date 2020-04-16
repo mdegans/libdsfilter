@@ -1,7 +1,7 @@
 # source of truth for many things
 project('dsfilter', ['cuda', 'c'],
   version: '0.0.1',  # version becomes: #define DSFILTER_VERSION ... 
-  meson_version: '>= 0.50.0',  # only 0.50 and above have CUDA support
+  meson_version: '>= 0.54.0',  # only 0.50 and above have CUDA support
 )
 author = 'Michael de Gans'
 email = 'michael.john.degans@gmail.com'
