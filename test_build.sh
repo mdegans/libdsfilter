@@ -1,0 +1,1 @@
+exec docker build --rm -f "test.Dockerfile" -t dsfilter:latest "." 2>&1 | tee test_build.log && docker run -it --rm dsfilter:latest 2>&1 | tee -a test_build.log

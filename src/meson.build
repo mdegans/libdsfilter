@@ -1,0 +1,47 @@
+# basic build configuration
+src = [
+  'BaseCudaFilter.cu',
+  'TestCudaFilter.cu',
+]
+includes = [
+  include_directories('../include'),
+  include_directories('../config'),
+]
+headers_to_install = [
+  '../include/BaseCudaFilter.hpp',
+  '../include/TestCudaFilter.hpp',
+]
+
+# deepstream stuff
+nvds_libdir = '/opt/nvidia/deepstream/deepstream-4.0/lib'
+nvds_incdir = '/opt/nvidia/deepstream/deepstream-4.0/sources/includes'
+nvds_link_args = ['-L'+nvds_libdir, '-lnvds_meta', '-lnvdsgst_meta']
+nvds_pkgconfig_deps = [
+  dependency('glib-2.0', version: '>=2.50'),
+  dependency('gobject-2.0', version: '>=2.0'),
+  dependency('gstreamer-1.0', version: '>=1.0'),
+]
+nvds_dep = declare_dependency(
+  version: deepstream_version,
+  dependencies: [
+    dependency('cuda', version: '>=10'),
+    nvds_pkgconfig_deps,
+  ],
+  link_args: nvds_link_args,
+  include_directories: include_directories(nvds_incdir),
+)
+
+libdsfilter_name = meson.project_name() + '-' + meson.project_version()
+
+# shared library target
+libdsfilter = shared_library(libdsfilter_name, src,
+  dependencies: nvds_dep,
+  include_directories: includes,
+  install: true,
+)
+
+# install headers to $PREFIX/include/dsfilter
+install_headers(headers_to_install, subdir: meson.project_name())
+
+subdir('pkg-config')
+subdir('test')
