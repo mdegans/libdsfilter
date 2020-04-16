@@ -48,7 +48,7 @@ libdsfilter_dep = declare_dependency(
   include_directories: [includes, include_directories(nvds_incdir)],
   link_args: nvds_link_args,
   link_with: libdsfilter,
-  variables: dsfilter_config,
+  # variables: dsfilter_config,  # must be a dict, so skipping for now
 )
 
 # install headers to $PREFIX/include/dsfilter
