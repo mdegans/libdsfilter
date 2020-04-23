@@ -6,14 +6,16 @@
 #include "BaseCudaFilter.hpp"
 
 /**
- * TestCudaFilter just prints some information about the objects it receives
+ * TestCudaFilter just logs info about the buffer.
  */
 class TestCudaFilter : public BaseCudaFilter {
 public:
 	/**
-	 * Implementation of on_object that just prints metadata information
+	 * This class is for unit tests. It just passes the buffer through.
+	 * 
+	 * Some info about the buffer is logged to the DEBUG level.
 	 */
-	bool on_object(NvDsFrameMeta * f_meta, NvDsObjectMeta * o_meta, NvBufSurfaceParams * frame);
+    GstFlowReturn on_buffer(GstBuffer * buf);
 };
 
 #endif // TEST_CUDA_FILTER_HPP_
