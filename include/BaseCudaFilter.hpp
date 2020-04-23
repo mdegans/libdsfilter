@@ -39,7 +39,7 @@ public:
      * 
      * return true on success, false on failure
      */
-    virtual bool on_object(NvDsFrameMeta * f_meta, NvDsObjectMeta * o_meta, NvBufSurfaceParams * frame) = 0;
+    virtual bool on_object(NvDsFrameMeta * f_meta, NvDsObjectMeta * o_meta, NvBufSurfaceParams * frame);
 };
 
 #endif // BASE_CUDA_FILTER_HPP_
