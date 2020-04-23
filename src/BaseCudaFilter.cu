@@ -85,9 +85,9 @@ bool BaseCudaFilter::on_frame(NvBufSurface * surf, NvDsFrameMeta * frame_meta) {
 }
 
 bool BaseCudaFilter::on_object(NvDsFrameMeta * f_meta, NvDsObjectMeta * o_meta, NvBufSurfaceParams * frame) {
-    GST_DEBUG("TestCudaFilter:on_object:got frame %d", f_meta->frame_num);
-    GST_DEBUG("TestCudaFilter:on_object:surface color format: %d", frame->colorFormat);
-    GST_DEBUG("TestCudaFilter:on_object:got object: %s with confidence %.2f",
+    GST_LOG("BaseCudaFilter::on_object:got frame %d", f_meta->frame_num);
+    GST_LOG("BaseCudaFilter::on_object:surface color format: %d", frame->colorFormat);
+    GST_LOG("BaseCudaFilter::on_object:got object: %s with confidence %.2f",
         o_meta->obj_label, o_meta->confidence);
     return true;
 }
