@@ -17,8 +17,8 @@
 #ifndef UTILS_HPP_
 #define UTILS_HPP_
 
-#include <gst/gst.h>
 #include <cuda_runtime.h>
+#include <gst/gst.h>
 
 #pragma once
 
@@ -27,12 +27,14 @@
  * Return false on fail, true on success.
  */
 #define checkCuda(val) __checkCuda((val), #val, __FILE__, __LINE__)
-inline bool __checkCuda(cudaError_t err, char const *const func, const char *const file,
-		   int const line) {
+inline bool __checkCuda(cudaError_t err,
+                        char const* const func,
+                        const char* const file,
+                        int const line) {
   if (err) {
-	GST_ERROR("CUDA error at %s:%d code=%d(%s) \"%s\" \n", file, line,
-			static_cast<unsigned int>(err), cudaGetErrorName(err), func);
-	return false;
+    GST_ERROR("CUDA error at %s:%d code=%d(%s) \"%s\" \n", file, line,
+              static_cast<unsigned int>(err), cudaGetErrorName(err), func);
+    return false;
   }
   return true;
 }
@@ -42,8 +44,8 @@ inline bool __checkCuda(cudaError_t err, char const *const func, const char *con
  * Return false on fail, true on success.
  */
 #define checkLastCuda() __checkLastCuda(__FILE__, __LINE__)
-inline bool __checkLastCuda(const char *file, const int line) {
-	return __checkCuda(cudaGetLastError(), "(last)", file, line);
+inline bool __checkLastCuda(const char* file, const int line) {
+  return __checkCuda(cudaGetLastError(), "(last)", file, line);
 }
 
-#endif // UTILS_HPP_
+#endif  // UTILS_HPP_
