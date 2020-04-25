@@ -4,9 +4,9 @@
 
 int main() {
   g_print("* creating TestCudaFilter\n");
-  BaseCudaFilter* filter = NULL;
+  BaseCudaFilter* filter = nullptr;
   filter = new TestCudaFilter();
-  if (filter == NULL) {
+  if (filter == nullptr) {
     g_error("filter == NULL");
   }
   g_print("* deleting TestCudaFilter\n");
