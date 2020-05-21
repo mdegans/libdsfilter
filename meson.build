@@ -15,7 +15,7 @@ url = 'https://github.com/mdegans/libdsfilter'
 deepstream_version = '5.0'
 
 # get the c compiler
-cc = meson.get_compiler('c')
+cc = meson.get_compiler('cpp')
 
 # get and check cuda
 nvcc = meson.get_compiler('cuda')
