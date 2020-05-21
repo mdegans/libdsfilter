@@ -53,7 +53,7 @@ USER ${DSFILTER_USERNAME}:${DSFILTER_USERNAME}
 
 # copy source
 WORKDIR ${DSFILTER_SRCDIR}
-COPY meson.build ./
+COPY meson.build VERSION ./
 COPY src ./src/
 COPY include ./include/
 COPY config ./config/
