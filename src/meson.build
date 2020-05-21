@@ -3,6 +3,7 @@ src = [
   'BaseCudaFilter.cu',
   'TestCudaFilter.cu',
   'BaseFilter.cpp',
+  'DistanceFilter.cpp',
 ]
 includes = [
   include_directories('../include'),
@@ -12,6 +13,7 @@ headers_to_install = [
   '../include/BaseCudaFilter.hpp',
   '../include/TestCudaFilter.hpp',
   '../include/BaseFilter.hpp',
+  '../include/DistanceFilter.hpp',
 ]
 
 # deepstream stuff, becuase deepstream.pc file is not in PKG_CONFIG_PATH
