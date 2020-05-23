@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-FROM nvcr.io/nvidia/deepstream:4.0.2-19.12-devel
+FROM nvcr.io/nvidia/deepstream:5.0-dp-20.04-devel
 
 ARG PROJECT_NAME="dsfilter"
 ARG DSFILTER_USERNAME="${PROJECT_NAME}"
@@ -25,23 +25,26 @@ ARG DSFILTER_HOME="/var/${DSFILTER_USERNAME}"
 ARG DSFILTER_PREFIX="${DSFILTER_HOME}/.local/"
 ARG DSFILTER_SRCDIR="${DSFILTER_PREFIX}/src/dsfilter"
 
+RUN echo "/opt/nvidia/deepstream/deepstream/lib" > /etc/ld.so.conf.d/deepstream.conf \
+    && ldconfig
+
 # install deps and create user
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        cmake \
         libglib2.0-dev \
-        libgstreamer1.0-dev \
         libgstreamer-plugins-base1.0-dev \
+        libgstreamer1.0-dev \
+        meson \
+        ninja-build \
         python3 \
         python3-pip \
         python3-setuptools \
         python3-wheel \
-        ninja-build \
     && pip3 install meson \
     && apt-get purge -y --autoremove \
         python3-pip \
         python3-setuptools \
         python3-wheel \
-    && cp -R /root/deepstream_sdk_v4.0.2_x86_64/sources/ /opt/nvidia/deepstream/deepstream-4.0/ \
+    && chmod -R o-w /opt/nvidia/deepstream/deepstream-5.0/ \
     && useradd -md ${DSFILTER_HOME} -rUs /bin/false ${DSFILTER_USERNAME} \
     && mkdir -p ${DSFILTER_SRCDIR} \
     && chown -R ${DSFILTER_USERNAME}:${DSFILTER_USERNAME} ${DSFILTER_HOME}
@@ -53,7 +56,7 @@ USER ${DSFILTER_USERNAME}:${DSFILTER_USERNAME}
 
 # copy source
 WORKDIR ${DSFILTER_SRCDIR}
-COPY meson.build ./
+COPY meson.build VERSION ./
 COPY src ./src/
 COPY include ./include/
 COPY config ./config/

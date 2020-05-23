@@ -5,41 +5,21 @@
 
 // DeepStream includes:
 
-#include "gstnvdsmeta.h"
-#include "nvbufsurface.h"
-
 #include <cuda_runtime.h>
 
-class BaseCudaFilter {
-protected:
-    // cuda stream to use for a filter
-    cudaStream_t stream;
-public:
-    BaseCudaFilter();
-    virtual ~BaseCudaFilter();
+#include "BaseFilter.hpp"
 
-    /**
-     * Called on every NVMM batched buffer.
-     * 
-     * Should be connected to a buffer callback or used in a filter plugin.
-     * 
-     * return a GstFlowReturn (success, failure, etc.)
-     */
-    virtual GstFlowReturn on_buffer(GstBuffer * buf);
+/**
+ * Base class for filters needing a CUDA stream.
+ */
+class BaseCudaFilter: public BaseFilter {
+ protected:
+  // cuda stream to use for a filter
+  cudaStream_t stream;
 
-    /**
-     * Called on every frame by on_buffer
-     * 
-     * return true on success, false on failure
-     */
-    virtual bool on_frame(NvBufSurface * surf, NvDsFrameMeta * frame_meta);
-
-    /**
-     * Called on every object meta by on_frame
-     * 
-     * return true on success, false on failure
-     */
-    virtual bool on_object(NvDsFrameMeta * f_meta, NvDsObjectMeta * o_meta, NvBufSurfaceParams * frame) = 0;
+ public:
+  BaseCudaFilter();
+  virtual ~BaseCudaFilter();
 };
 
-#endif // BASE_CUDA_FILTER_HPP_
+#endif  // BASE_CUDA_FILTER_HPP_

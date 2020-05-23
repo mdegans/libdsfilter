@@ -2,6 +2,8 @@
 src = [
   'BaseCudaFilter.cu',
   'TestCudaFilter.cu',
+  'BaseFilter.cpp',
+  'DistanceFilter.cpp',
 ]
 includes = [
   include_directories('../include'),
@@ -10,11 +12,14 @@ includes = [
 headers_to_install = [
   '../include/BaseCudaFilter.hpp',
   '../include/TestCudaFilter.hpp',
+  '../include/BaseFilter.hpp',
+  '../include/DistanceFilter.hpp',
 ]
 
-# deepstream stuff
-nvds_libdir = '/opt/nvidia/deepstream/deepstream-4.0/lib'
-nvds_incdir = '/opt/nvidia/deepstream/deepstream-4.0/sources/includes'
+# deepstream stuff, becuase deepstream.pc file is not in PKG_CONFIG_PATH
+# and include path is incorrect.
+nvds_libdir = '/opt/nvidia/deepstream/deepstream-5.0/lib'
+nvds_incdir = '/opt/nvidia/deepstream/deepstream-5.0/sources/includes'
 nvds_link_args = ['-L'+nvds_libdir, '-lnvds_meta', '-lnvdsgst_meta']
 nvds_pkgconfig_deps = [
   dependency('glib-2.0', version: '>=2.50'),
@@ -38,6 +43,16 @@ libdsfilter = shared_library(libdsfilter_name, src,
   dependencies: nvds_dep,
   include_directories: includes,
   install: true,
+)
+
+# a dep so this can be included as a subproject
+libdsfilter_dep = declare_dependency(
+  version: meson.project_version(),
+  dependencies: nvds_dep,
+  include_directories: [includes, include_directories(nvds_incdir)],
+  link_args: nvds_link_args,
+  link_with: libdsfilter,
+  # variables: dsfilter_config,  # must be a dict, so skipping for now
 )
 
 # install headers to $PREFIX/include/dsfilter
