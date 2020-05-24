@@ -4,7 +4,7 @@ src = [
   'TestCudaFilter.cu',
   'BaseFilter.cpp',
   'DistanceFilter.cpp',
-  'meta.pb.cc',
+  'distance.pb.cc',
 ]
 includes = [
   include_directories('../include'),
@@ -23,7 +23,7 @@ nvds_libdir = '/opt/nvidia/deepstream/deepstream/lib'
 nvds_incdir = '/opt/nvidia/deepstream/deepstream/sources/includes'
 nvds_link_args = ['-L'+nvds_libdir, '-lnvds_meta', '-lnvdsgst_meta']
 nvds_pkgconfig_deps = [
-  dependency('protobuf', version: '>=3.0.0')
+  dependency('protobuf', version: '>=3.0.0'),
   dependency('glib-2.0', version: '>=2.50'),
   dependency('gobject-2.0', version: '>=2.0'),
   dependency('gstreamer-1.0', version: '>=1.0'),
@@ -41,7 +41,7 @@ nvds_dep = declare_dependency(
 libdsfilter_name = meson.project_name() + '-' + meson.project_version()
 
 # shared library target
-libdsfilter = shared_library(libdsfilter_name, src,
+libdsfilter = library(libdsfilter_name, src,
   dependencies: nvds_dep,
   include_directories: includes,
   install: true,

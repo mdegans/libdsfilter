@@ -42,14 +42,18 @@
  */
 class DistanceFilter : public BaseFilter {
  public:
+  DistanceFilter();
+  virtual ~DistanceFilter() = default;
   /**
    * The class id to turn red.
    */
   int class_id;
   /**
-   * This class is for unit tests. It just passes the buffer through.
-   *
-   * Some info about the buffer is logged to the DEBUG level.
+   * Whether to set osd metadata for drawing.
+   */
+  bool do_drawing;
+  /**
+   * This implementation does drawing and analytics on NvDs Metadata.
    */
   GstFlowReturn on_buffer(GstBuffer* buf);
 };
