@@ -19,8 +19,8 @@ headers_to_install = [
 
 # deepstream stuff, becuase deepstream.pc file is not in PKG_CONFIG_PATH
 # and include path is incorrect.
-nvds_libdir = '/opt/nvidia/deepstream/deepstream-5.0/lib'
-nvds_incdir = '/opt/nvidia/deepstream/deepstream-5.0/sources/includes'
+nvds_libdir = '/opt/nvidia/deepstream/deepstream/lib'
+nvds_incdir = '/opt/nvidia/deepstream/deepstream/sources/includes'
 nvds_link_args = ['-L'+nvds_libdir, '-lnvds_meta', '-lnvdsgst_meta']
 nvds_pkgconfig_deps = [
   dependency('protobuf', version: '>=3.0.0')
