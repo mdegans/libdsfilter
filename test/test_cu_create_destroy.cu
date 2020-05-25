@@ -1,3 +1,4 @@
+// todo: this used to run on build wiht meson. need to switch build systems
 #include "TestCudaFilter.hpp"
 
 // TODO(mdegans): use gtest
