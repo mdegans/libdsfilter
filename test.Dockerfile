@@ -17,12 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-FROM nvcr.io/nvidia/deepstream:5.0-dp-20.04-devel
-
-# fix deepstream permissions and ldconfig
-RUN chmod -R o-w /opt/nvidia/deepstream/deepstream-5.0/ \
-    && echo "/opt/nvidia/deepstream/deepstream/lib" > /etc/ld.so.conf.d/deepstream.conf \
-    && ldconfig
+FROM mdegans/libdistanceproto:deepstream
 
 # install deps and create user
 RUN apt-get update && apt-get install -y --no-install-recommends \
