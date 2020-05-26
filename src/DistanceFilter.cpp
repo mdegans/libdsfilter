@@ -33,6 +33,7 @@
 /**
  * TODOS:
  *  - use gstreamer object logging instead of GST_WARNING
+ *  - handle existing metadata, since that isn't covered yet
  */
 
 #include "DistanceFilter.hpp"
