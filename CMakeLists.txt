@@ -11,7 +11,7 @@ SET(CMAKE_CXX_STANDARD 11)
 
 FIND_PACKAGE(PkgConfig REQUIRED)
 PKG_CHECK_MODULES(GSTREAMER REQUIRED gstreamer-1.0)
-PKG_CHECK_MODULES(PROTOBUF REQUIRED protobuf)
+PKG_CHECK_MODULES(DISTANCEPROTO REQUIRED distanceproto-0.2)
 
 # deepstream stuff
 LINK_DIRECTORIES(/opt/nvidia/deepstream/deepstream/lib/)
@@ -23,7 +23,6 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED
   src/BaseCudaFilter.cu
   src/TestCudaFilter.cu
   src/BaseFilter.cpp
-  src/distance.pb.cc
   src/HashCudaFilter.cpp
   src/DistanceFilter.cpp
 )
@@ -39,9 +38,10 @@ TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
   ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
   /opt/nvidia/deepstream/deepstream/sources/includes
   ${GSTREAMER_INCLUDE_DIRS}
+  ${DISTANCEPROTO_INCLUDE_DIRS}
 )
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${PROTOBUF_LIBRARIES} nvds_meta nvdsgst_meta)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES} nvds_meta nvdsgst_meta)
 
 # generate and install pkg-config file
 # (holy crap this is easier than a .cmake)

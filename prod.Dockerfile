@@ -17,15 +17,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-FROM nvcr.io/nvidia/deepstream:5.0-dp-20.04-devel
+# FROM registry.hub.docker.com/mdegans/libdistanceproto:deepstream
+FROM mdegans/libdistanceproto:deepstream
+
 
 ARG VERSION="UNSET - check docker_build.sh"
 ARG BUILD_DIR="/usr/local/src/dsfilter"
-
-# fix deepstream permissions and ldconfig
-RUN chmod -R o-w /opt/nvidia/deepstream/deepstream-5.0/ \
-    && echo "/opt/nvidia/deepstream/deepstream/lib" > /etc/ld.so.conf.d/deepstream.conf \
-    && ldconfig
 
 WORKDIR ${BUILD_DIR}
 COPY CMakeLists.txt dsfilter.pc.in DsfilterConfig.cmake.in LICENSE README.md ./
