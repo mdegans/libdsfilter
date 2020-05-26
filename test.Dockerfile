@@ -19,6 +19,7 @@
 
 FROM nvcr.io/nvidia/deepstream:5.0-dp-20.04-devel
 
+# fix deepstream permissions and ldconfig
 RUN chmod -R o-w /opt/nvidia/deepstream/deepstream-5.0/ \
     && echo "/opt/nvidia/deepstream/deepstream/lib" > /etc/ld.so.conf.d/deepstream.conf \
     && ldconfig
@@ -35,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # copy source
 WORKDIR /tmp
-COPY CMakeLists.txt LICENSE README.md ./
+COPY CMakeLists.txt dsfilter.pc.in LICENSE README.md ./
 COPY src ./src/
 COPY include ./include/
 COPY test ./test/
