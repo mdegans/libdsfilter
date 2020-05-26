@@ -46,4 +46,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && cmake -GNinja .. \
     && ninja \
     && ninja install \
+    && apt-get purge -y --autoremove \
+        cmake \
+        ninja-build \
     && rm -rf /var/lib/apt/lists/*
