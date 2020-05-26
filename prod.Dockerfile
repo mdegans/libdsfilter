@@ -17,9 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-# FROM registry.hub.docker.com/mdegans/libdistanceproto:deepstream
-FROM mdegans/libdistanceproto:deepstream
-
+FROM registry.hub.docker.com/mdegans/libdistanceproto:deepstream
 
 ARG VERSION="UNSET - check docker_build.sh"
 ARG BUILD_DIR="/usr/local/src/dsfilter"
