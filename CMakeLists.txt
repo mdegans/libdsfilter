@@ -45,8 +45,9 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} nvds_meta nvdsgst_m
 
 # generate and install pkg-config file
 # (holy crap this is easier than a .cmake)
-CONFIGURE_FILE(dsfilter.pc.in dsfilter.pc @ONLY)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/dsfilter.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
+SET(DSFILTER_PC_NAME dsfilter-${DSFILTER_VERSION_MAJOR}.${DSFILTER_VERSION_MINOR}.pc)
+CONFIGURE_FILE(dsfilter.pc.in ${DSFILTER_PC_NAME} @ONLY)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DSFILTER_PC_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
 # install library and headers
 INSTALL(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}
