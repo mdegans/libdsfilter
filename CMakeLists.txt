@@ -24,11 +24,11 @@ LINK_DIRECTORIES(/opt/nvidia/deepstream/deepstream/lib/)
 # it would be appreciated.
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED
-    src/BaseCudaFilter.cu
-    src/TestCudaFilter.cu
-    src/BaseFilter.cpp
-    src/distance.pb.cc
-    src/HashCudaFilter.cpp
+  src/BaseCudaFilter.cu
+  src/TestCudaFilter.cu
+  src/BaseFilter.cpp
+  src/distance.pb.cc
+  src/HashCudaFilter.cpp
 )
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION ${DSFILTER_VERSION_STRING} SOVERSION ${DSFILTER_VERSION_MAJOR})
@@ -50,8 +50,8 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/dsfilter.pc DESTINATION ${CMAKE_INSTAL
 
 # install library and headers
 INSTALL(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}
-    LIBRARY DESTINATION lib/${CMAKE_CXX_LIBRARY_ARCHITECTURE}
-    PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
+  LIBRARY DESTINATION lib/${CMAKE_CXX_LIBRARY_ARCHITECTURE}
+  PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
 )
 
 # generating a .cmake file is positively arcane
