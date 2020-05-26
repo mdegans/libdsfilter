@@ -16,6 +16,8 @@ private:
   Hash& hash;
   SmHash& sm_hash;
 public:
+  HashCudaFilter();
+  virtual ~HashCudaFilter() = default;
   /**
    * on_frame calculates a simple image hash for each frame
    */
