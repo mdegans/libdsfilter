@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # copy source
 WORKDIR /tmp
-COPY CMakeLists.txt dsfilter.pc.in LICENSE README.md ./
+COPY CMakeLists.txt dsfilter.pc.in DsfilterConfig.cmake.in LICENSE README.md ./
 COPY src ./src/
 COPY include ./include/
 COPY test ./test/

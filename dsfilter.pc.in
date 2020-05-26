@@ -5,7 +5,7 @@ includedir=${prefix}/include/@PROJECT_NAME@
 Name: dsfilter
 Description: A simple library to build CUDA DeepStream filters.
 URL: https://github.com/mdegans/libdsfilter
-Version: @VERSION@
+Version: @DSFILTER_VERSION_STRING@
 Requires: glib-2.0 >= 2.50, gobject-2.0 >= 2.0, gstreamer-1.0 >= 1.0
 Libs: -L${libdir} -ldsfilter-0.0.1 -L/opt/nvidia/deepstream/deepstream/lib -lnvds_meta -lnvdsgst_meta
 Cflags:-I${includedir} -I/opt/nvidia/deepstream/deepstream/sources/includes

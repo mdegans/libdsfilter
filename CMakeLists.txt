@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 LINK_DIRECTORIES(/opt/nvidia/deepstream/deepstream/lib/)
 # TARGET_LINK_DIRECTORIES doesn't seem to be supported in cmake 3.10\
 # if anybody knows how to add this to the target so it can be exported
-# it would be appreciated. My cmake is meh.
+# it would be appreciated.
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED
     src/BaseCudaFilter.cu
@@ -44,6 +44,7 @@ TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} nvds_meta nvdsgst_meta)
 
 # generate and install pkg-config file
+# (holy crap this is easier than a .cmake)
 CONFIGURE_FILE(dsfilter.pc.in dsfilter.pc @ONLY)
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/dsfilter.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
@@ -54,5 +55,21 @@ INSTALL(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}
 )
 
 # generating a .cmake file is positively arcane
-# but if anybody can complete this part it would be nice and 
-# save me hours of going through the cmake docs
+# meson is better at this. it would be perfect if not for
+# cuda and deepstream
+
+# SET(INCLUDE_INSTALL_DIR include/${PROJECT_NAME})
+# SET(LIB_INSTALL_DIR lib/${CMAKE_CXX_LIBRARY_ARCHITECTURE})
+
+# INCLUDE(CMakePackageConfigHelpers)
+# CONFIGURE_PACKAGE_CONFIG_FILE(DsfilterConfig.cmake.in
+#   ${CMAKE_CURRENT_BINARY_DIR}/DsfilterConfig.cmake
+#   INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/${PROJECT_NAME}
+#   PATH_VARS INCLUDE_INSTALL_DIR)
+# WRITE_BASIC_PACKAGE_VERSION_FILE(
+#   ${CMAKE_CURRENT_BINARY_DIR}/DsfilterVersion.cmake
+#   VERSION ${DSFILTER_VERSION_STRING}
+#   COMPATIBILITY SameMajorVersion )
+# INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/DsfilterConfig.cmake
+#               ${CMAKE_CURRENT_BINARY_DIR}/DsfilterVersion.cmake
+#         DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/${PROJECT_NAME})
