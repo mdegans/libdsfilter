@@ -186,10 +186,10 @@ DistanceFilter::on_buffer(GstBuffer* buf)
 
         rect_params->border_width = 0;
         rect_params->has_bg_color = 1;
-        rect_params->bg_color.red = color_val + 0.2f;
-        rect_params->bg_color.green = 0.2f;
-        rect_params->bg_color.blue = 0.2f;
-        rect_params->bg_color.alpha = color_val + 0.2f;
+        rect_params->bg_color.red = (double) color_val + 0.2;
+        rect_params->bg_color.green = 0.2;
+        rect_params->bg_color.blue = 0.2;
+        rect_params->bg_color.alpha = (double) color_val + 0.2;
       }
     }
     // set the sum danger for the frame
