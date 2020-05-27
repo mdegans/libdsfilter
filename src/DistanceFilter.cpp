@@ -1,6 +1,9 @@
 /* DistanceFilter.cpp
  *
  * Copyright 2020 Michael de Gans
+ * 
+ * many thanks to:
+ * deepstream_user_metadata_app.c
  *
  * 4019dc5f7144321927bab2a4a3a3860a442bc239885797174c4da291d1479784
  * 5a4a83a5f111f5dbd37187008ad889002bce85c8be381491f8157ba337d9cde7
@@ -59,7 +62,7 @@ calculate_how_dangerous(int class_id, NvDsMetaList* l_obj, float danger_distance
  * NvDsUserMeta copy function for batch level distance metadata.
  */
 static gpointer copy_dp_batch_meta(gpointer data, gpointer user_data) {
-  NvDsUserMeta *user_meta = (NvDsUserMeta *)data;
+  NvDsUserMeta* user_meta = (NvDsUserMeta *)data;
 
   auto src_b_proto = (dp::Batch*)(user_meta->user_meta_data);
   auto dst_b_proto = new dp::Batch();
@@ -73,7 +76,7 @@ static gpointer copy_dp_batch_meta(gpointer data, gpointer user_data) {
  * NvDsUserMeta release function for batch level distance metadata.
  */
 static void release_dp_batch_meta(gpointer data, gpointer user_data) {
-  NvDsUserMeta *user_meta = (NvDsUserMeta *)data;
+  NvDsUserMeta* user_meta = (NvDsUserMeta *)data;
 
   auto b_proto = (dp::Batch*)(user_meta->user_meta_data);
   delete b_proto;
