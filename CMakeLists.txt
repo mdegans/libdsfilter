@@ -63,23 +63,3 @@ INSTALL(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}
   LIBRARY DESTINATION lib/${CMAKE_CXX_LIBRARY_ARCHITECTURE}
   PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
 )
-
-# generating a .cmake file is positively arcane
-# meson is better at this. it would be perfect if not for
-# cuda and deepstream
-
-# SET(INCLUDE_INSTALL_DIR include/${PROJECT_NAME})
-# SET(LIB_INSTALL_DIR lib/${CMAKE_CXX_LIBRARY_ARCHITECTURE})
-
-# INCLUDE(CMakePackageConfigHelpers)
-# CONFIGURE_PACKAGE_CONFIG_FILE(DsfilterConfig.cmake.in
-#   ${CMAKE_CURRENT_BINARY_DIR}/DsfilterConfig.cmake
-#   INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/${PROJECT_NAME}
-#   PATH_VARS INCLUDE_INSTALL_DIR)
-# WRITE_BASIC_PACKAGE_VERSION_FILE(
-#   ${CMAKE_CURRENT_BINARY_DIR}/DsfilterVersion.cmake
-#   VERSION ${DSFILTER_VERSION_STRING}
-#   COMPATIBILITY SameMajorVersion )
-# INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/DsfilterConfig.cmake
-#               ${CMAKE_CURRENT_BINARY_DIR}/DsfilterVersion.cmake
-#         DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/${PROJECT_NAME})
