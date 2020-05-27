@@ -104,13 +104,12 @@ DistanceFilter::on_buffer(GstBuffer* buf)
     return GST_FLOW_OK;
   }
   // we need to lock the metadata
-  GRecMutex* meta_lock = &batch_meta->meta_mutex;
-  g_rec_mutex_lock(meta_lock);
+  nvds_acquire_meta_lock(batch_meta);
   // Nvidia user metadata structure
   NvDsUserMeta* user_meta = nvds_acquire_user_meta_from_pool(batch_meta);
   if (user_meta == nullptr) {
     GST_WARNING("dsdistance: could not get user meta from batch pool !!!");
-    g_rec_mutex_unlock(meta_lock);
+    nvds_release_meta_lock(batch_meta);
     return GST_FLOW_OK;
   }
   // Nvidia frame level metadata
@@ -196,7 +195,7 @@ DistanceFilter::on_buffer(GstBuffer* buf)
     // set the sum danger for the frame
     f_proto->set_sum_danger(f_danger);
   }
-  g_rec_mutex_unlock(meta_lock);
+  nvds_release_meta_lock(batch_meta);
   return GST_FLOW_OK;
 }
 
