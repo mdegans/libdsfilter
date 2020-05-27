@@ -60,7 +60,7 @@ class DistanceFilter : public BaseFilter {
   /**
    * This implementation does drawing and analytics on NvDs Metadata.
    */
-  GstFlowReturn on_buffer(GstBuffer* buf);
+  virtual GstFlowReturn on_buffer(GstBuffer* buf);
 };
 
 #endif  // DISTANCE_FILTER_HPP_

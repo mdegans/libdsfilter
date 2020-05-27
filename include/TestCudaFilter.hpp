@@ -15,7 +15,7 @@ class TestCudaFilter : public BaseCudaFilter {
    *
    * Some info about the buffer is logged to the DEBUG level.
    */
-  GstFlowReturn on_buffer(GstBuffer* buf);
+  virtual GstFlowReturn on_buffer(GstBuffer* buf);
 };
 
 #endif  // TEST_CUDA_FILTER_HPP_
