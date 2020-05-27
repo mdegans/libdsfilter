@@ -31,6 +31,9 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED
   src/BaseFilter.cpp
   src/HashCudaFilter.cpp
   src/DistanceFilter.cpp
+  src/ProtoPayloadFilter.cpp
+  src/PayloadBroker.cpp
+  src/PyPayloadBroker.cpp
 )
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION ${DSFILTER_VERSION_STRING} SOVERSION ${DSFILTER_VERSION_MAJOR})

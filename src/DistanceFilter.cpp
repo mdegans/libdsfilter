@@ -54,11 +54,6 @@ static float
 calculate_how_dangerous(int class_id, NvDsMetaList* l_obj, float danger_distance);
 
 /**
- *  distanceproto batch nvds user metadata type
- */
-#define NVDS_USER_BATCH_META_DP (nvds_get_user_meta_type((gchar*)"NVIDIA.NVINFER.USER_META"))
-
-/**
  * NvDsUserMeta copy function for batch level distance metadata.
  */
 static gpointer copy_dp_batch_meta(gpointer data, gpointer user_data) {
@@ -130,7 +125,7 @@ DistanceFilter::on_buffer(GstBuffer* buf)
   auto b_proto = new dp::Batch();
   // attach it to nvidia user meta
   user_meta->user_meta_data = (void*) b_proto;
-  user_meta->base_meta.meta_type = NVDS_USER_BATCH_META_DP;
+  user_meta->base_meta.meta_type = DF_USER_BATCH_META;
   user_meta->base_meta.copy_func = (NvDsMetaCopyFunc) copy_dp_batch_meta;
   user_meta->base_meta.release_func = (NvDsMetaReleaseFunc) release_dp_batch_meta;
   // add nvidia user meta to the batch

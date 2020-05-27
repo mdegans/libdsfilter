@@ -38,6 +38,11 @@
 #include "BaseFilter.hpp"
 
 /**
+ *  distanceproto batch nvds user metadata type
+ */
+#define DF_USER_BATCH_META (nvds_get_user_meta_type((gchar*)"NVIDIA.NVINFER.USER_META"))
+
+/**
  * DistanceFilter modifies osd metadata to make closer objects red.
  */
 class DistanceFilter : public BaseFilter {
