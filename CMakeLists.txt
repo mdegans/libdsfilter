@@ -27,13 +27,13 @@ LINK_DIRECTORIES(/opt/nvidia/deepstream/deepstream/lib/)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED
   src/BaseCudaFilter.cu
-  src/TestCudaFilter.cu
   src/BaseFilter.cpp
-  src/HashCudaFilter.cpp
   src/DistanceFilter.cpp
-  src/ProtoPayloadFilter.cpp
+  src/HashCudaFilter.cpp
   src/PayloadBroker.cpp
+  src/ProtoPayloadFilter.cpp
   src/PyPayloadBroker.cpp
+  src/TestCudaFilter.cu
 )
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION ${DSFILTER_VERSION_STRING} SOVERSION ${DSFILTER_VERSION_MAJOR})

@@ -20,6 +20,8 @@
 ARG DISTANCEPROTO_TAG="UNSET (use docker_build.sh to build)"
 FROM mdegans/libdistanceproto:${DISTANCEPROTO_TAG}
 
+ARG BUILD_DIR="/usr/local/src/dsfilter"
+
 # install deps and create user
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libglib2.0-dev \
@@ -31,7 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # copy source
-WORKDIR /tmp
+WORKDIR ${BUILD_DIR}
 COPY CMakeLists.txt dsfilter.pc.in DsfilterConfig.cmake.in VERSION LICENSE README.md ./
 COPY src ./src/
 COPY include ./include/
@@ -43,6 +45,7 @@ RUN mkdir build \
     && cmake -GNinja .. \
     && ninja \
     && ninja install \
+    && ldconfig \
     && cd .. \
     && rm -rf build
 

@@ -40,6 +40,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && cmake -GNinja .. \
     && ninja \
     && ninja install \
+    && ldconfig \
     && apt-get purge -y --autoremove \
         cmake \
         ninja-build \

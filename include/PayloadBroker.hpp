@@ -11,8 +11,6 @@
  */
 class PayloadBroker : public BaseFilter {
 public:
-  PayloadBroker();
-  virtual ~PayloadBroker() = default;
   /**
    * This implementation extracts metadata of type NVDS_PAYLOAD_META
    * from the user metadata list on batch_meta and calls on_batch with each.
