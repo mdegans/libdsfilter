@@ -17,7 +17,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-FROM mdegans/libdistanceproto:deepstream
+FROM registry.hub.docker.com/mdegans/libdistanceproto:deepstream
+
+ARG BUILD_DIR="/usr/local/src/dsfilter"
+
+WORKDIR ${BUILD_DIR}
+COPY CMakeLists.txt dsfilter.pc.in DsfilterConfig.cmake.in LICENSE VERSION README.md ./
+COPY src ./src/
+COPY include ./include/
+COPY test ./test/
 
 # install deps and create user
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -27,24 +35,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libprotobuf-dev \
         cmake \
         ninja-build \
-    && rm -rf /var/lib/apt/lists/*
-
-# copy source
-WORKDIR /tmp
-COPY CMakeLists.txt dsfilter.pc.in DsfilterConfig.cmake.in LICENSE README.md ./
-COPY src ./src/
-COPY include ./include/
-COPY test ./test/
-
-# build and install
-RUN mkdir build \
+    && mkdir build \
     && cd build \
     && cmake -GNinja .. \
     && ninja \
     && ninja install \
-    && cd .. \
-    && rm -rf build
-
-# verbose gstreamer logging
-ENV GST_DEBUG="4"
-ENV G_MESSAGES_DEBUG="all"
+    && apt-get purge -y --autoremove \
+        cmake \
+        ninja-build \
+    && rm -rf /var/lib/apt/lists/*
