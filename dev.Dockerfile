@@ -17,7 +17,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-FROM mdegans/libdistanceproto:deepstream
+ARG DISTANCEPROTO_TAG="UNSET (use docker_build.sh to build)"
+FROM mdegans/libdistanceproto:${DISTANCEPROTO_TAG}
 
 # install deps and create user
 RUN apt-get update && apt-get install -y --no-install-recommends \

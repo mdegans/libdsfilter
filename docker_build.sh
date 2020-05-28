@@ -22,6 +22,7 @@ readonly TAG_FULL="$TAG_BASE:$VERSION"
 echo "Building $TAG_FULL from $DOCKERFILE"
 
 docker build --rm -f $DOCKERFILE \
+    --build-arg DISTANCEPROTO_TAG="$VERSION-ds" \
     -t $TAG_FULL \
     $THIS_DIR $@
 docker tag "$TAG_FULL" "$TAG_BASE:$TAG_SUFFIX"
