@@ -27,25 +27,20 @@ PyPayloadBroker::PyPayloadBroker() {
   this->data = nullptr;
 }
 
-PyPayloadBroker::~PyPayloadBroker() {
-  g_list_free(this->data);
-}
-
 bool
 PyPayloadBroker::on_batch_payload(std::string* payload) {
   std::lock_guard<std::mutex> lock(this->data_lock);
-  char* cstr;
-  strcpy(cstr, payload->data());
-  this->data->data = cstr;
-  this->data = this->data->next;
+  strcpy(this->data, payload->data());
   return true;
 }
 
-GList*
-PyPayloadBroker::get_payloads() {
+gchararray
+PyPayloadBroker::get_payload() {
   std::lock_guard<std::mutex> lock(this->data_lock);
-  auto ret = (GList*) nullptr;
-  ret = this->data;
-  this->data = nullptr;
+  if (this->data == nullptr) {
+    return nullptr;
+  }
+  gchararray ret = nullptr;
+  strcpy(ret, this->data);
   return (ret);
 }

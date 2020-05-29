@@ -18,11 +18,11 @@
  */
 class PyPayloadBroker : public PayloadBroker {
 private:
-  GList* data;
+  gchararray data;
   std::mutex data_lock;
 public:
   PyPayloadBroker();
-  virtual ~PyPayloadBroker();
+  virtual ~PyPayloadBroker() = default;
   /**
    * Called by on_buffer when a NVDS_PAYLOAD_META is found on the buffer.
    * 
@@ -30,9 +30,9 @@ public:
    */
   virtual bool on_batch_payload(std::string* payload);
   /**
-   * get a GList of string with the latest payloads as char[].
+   * get a gchararray with the latest serialized batch.
    */
-  virtual GList* get_payloads();
+  virtual gchararray get_payload();
 };
 
 #endif  // PY_PAYLOAD_BROKER_HPP_
