@@ -50,5 +50,4 @@ RUN mkdir build \
     && rm -rf build
 
 # verbose gstreamer logging
-ENV GST_DEBUG="4"
 ENV G_MESSAGES_DEBUG="all"
