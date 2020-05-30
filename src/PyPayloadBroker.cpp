@@ -35,9 +35,8 @@ PyPayloadBroker::get_payload() {
   if (this->data.empty()) {
     return nullptr;
   }
-  GST_WARNING("GET PAYLOAD COPYING STRING");
   gchararray ret = (gchararray) malloc(this->data.length()+ 1);
   this->data.copy(ret, this->data.length());
-  GST_WARNING("GET PAYLOAD STRING COPIED");
+  ret[this->data.length()] = '\0';
   return ret;
 }
