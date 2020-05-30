@@ -259,7 +259,8 @@ calculate_how_dangerous(int class_id, NvDsMetaList* l_obj, float background_cuto
   float d; // distance temp (in pixels).
 
   // TODO(mdegans): combine these two loops into one function?
-  // there may be a function to do this
+  // there may be a function to do this (iteration in both directions from a starting
+  // element of a GList.)
 
   // iterate forwards from current element
   for (NvDsMetaList* f_iter = l_obj->next; f_iter != nullptr; f_iter = f_iter->next) {
