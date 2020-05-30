@@ -18,10 +18,10 @@
  */
 class PyPayloadBroker : public PayloadBroker {
 private:
-  gchararray data;
+  std::string data;
   std::mutex data_lock;
 public:
-  PyPayloadBroker();
+  PyPayloadBroker() = default;
   virtual ~PyPayloadBroker() = default;
   /**
    * Called by on_buffer when a NVDS_PAYLOAD_META is found on the buffer.
