@@ -46,6 +46,10 @@
 
 namespace dp = distanceproto;
 
+static const bool DEFAULT_DO_DRAWING=false;
+static const float DEFAULT_FILTER_HEIGHT_DIFF=0.25f;
+static const float DEFAULT_CLASS_ID=0;
+
 /**
  * Calculate how dangerous a list element is based on proximity to other
  * list elements.
@@ -59,12 +63,12 @@ calculate_how_dangerous(int class_id, NvDsMetaList* l_obj, float danger_distance
 static gpointer copy_dp_batch_meta(gpointer data, gpointer user_data) {
   NvDsUserMeta* user_meta = (NvDsUserMeta *)data;
 
-  auto src_b_proto = (dp::Batch*)(user_meta->user_meta_data);
-  auto dst_b_proto = new dp::Batch();
+  auto src_batch_proto = (dp::Batch*)(user_meta->user_meta_data);
+  auto dst_batch_proto = new dp::Batch();
 
-  dst_b_proto->CopyFrom(*src_b_proto);
+  dst_batch_proto->CopyFrom(*src_batch_proto);
 
-  return (gpointer) dst_b_proto;
+  return (gpointer) dst_batch_proto;
 }
 
 /**
@@ -73,8 +77,8 @@ static gpointer copy_dp_batch_meta(gpointer data, gpointer user_data) {
 static void release_dp_batch_meta(gpointer data, gpointer user_data) {
   NvDsUserMeta* user_meta = (NvDsUserMeta *)data;
 
-  auto b_proto = (dp::Batch*)(user_meta->user_meta_data);
-  delete b_proto;
+  auto batch_proto = (dp::Batch*)(user_meta->user_meta_data);
+  delete batch_proto;
 }
 
 DistanceFilter::DistanceFilter() {
@@ -83,8 +87,9 @@ DistanceFilter::DistanceFilter() {
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
   // set some default values for this
-  this->do_drawing = true;
-  this->class_id = 0;
+  this->do_drawing = DEFAULT_DO_DRAWING;
+  this->class_id = DEFAULT_CLASS_ID;
+  this->filter_height_diff = DEFAULT_FILTER_HEIGHT_DIFF;
 }
 
 GstFlowReturn
@@ -113,12 +118,12 @@ DistanceFilter::on_buffer(GstBuffer* buf)
     return GST_FLOW_OK;
   }
   // Nvidia frame level metadata
-  NvDsFrameMeta *frame_meta = nullptr;
+  NvDsFrameMeta* frame_meta = nullptr;
   // Nvidia object level metadata
   NvDsObjectMeta* obj_meta = nullptr;
   // Nvidia BBox structure (for osd element)
   NvOSD_RectParams* rect_params = nullptr;
-  // NvOSD_TextParams* text_params = nullptr;
+  NvOSD_TextParams* text_params = nullptr;
 
   // our Batch level metadata
   auto batch_proto = new dp::Batch();
@@ -173,7 +178,7 @@ DistanceFilter::on_buffer(GstBuffer* buf)
 
       // get how dangerous the object is as a float
       person_danger = calculate_how_dangerous(
-          this->class_id, l_obj, rect_params->height);
+          this->class_id, l_obj, this->filter_height_diff);
       // set it on the person metadata
       person_proto->set_danger_val(person_danger);
       // add it to the frame danger score
@@ -220,21 +225,50 @@ distance_between(NvOSD_RectParams* a, NvOSD_RectParams* b) {
   return sqrtf((float)(dx * dx + dy * dy));
 }
 
+/**
+ * Return true if how_much % height difference.
+ *
+ * @param how_much is the height % difference between two bounding boxes
+ * after which a true value is returned.
+ *
+ * if (abs(current->rect_params.height - other->rect_params.height) > current->rect_params.height * how_much) {
+ *   return true;
+ * }
+ * 
+ * A true return value may be used to skip a detection. The idea is that
+ * Higher height difference either meas kid or a narrow camera angle or far away.
+ * camera angles where people in the foreground against a background like a crowd
+ * are missed, so this can help to fix that by filtering out these pairs.
+ *
+ */
+static bool
+too_far(const NvDsObjectMeta* current, const NvDsObjectMeta* other, const float how_much) {
+  if (abs(current->rect_params.height - other->rect_params.height) > current->rect_params.height * how_much) {
+    return true;
+  }
+  return false;
+}
+
 static float
-calculate_how_dangerous(int class_id, NvDsMetaList* l_obj, float danger_distance) {
+calculate_how_dangerous(int class_id, NvDsMetaList* l_obj, float background_cutoff=0.25f) {
   NvDsObjectMeta* current = (NvDsObjectMeta *) (l_obj->data);
   NvDsObjectMeta* other;
 
-  // sum of all normalized violation distances
-  float how_dangerous = 0.0f;
+  float how_dangerous = 0.0f;  // sum of all normalized violation distances.
+  float danger_distance = current->rect_params.height;
+  float d; // distance temp (in pixels).
 
-  float d; // distance temp (in pixels)
+  // TODO(mdegans): combine these two loops into one function?
+  // there may be a function to do this
 
   // iterate forwards from current element
   for (NvDsMetaList* f_iter = l_obj->next; f_iter != nullptr; f_iter = f_iter->next) {
     other = (NvDsObjectMeta *) (f_iter->data);
     if (other->class_id != class_id) {
         continue;
+    }
+    if (too_far(current, other, background_cutoff)) {
+      continue;
     }
     d = danger_distance - distance_between(&(current->rect_params), &(other->rect_params));
     if (d > 0.0) {
@@ -247,6 +281,9 @@ calculate_how_dangerous(int class_id, NvDsMetaList* l_obj, float danger_distance
     other = (NvDsObjectMeta *) (r_iter->data);
     if (other->class_id != class_id) {
         continue;
+    }
+    if (too_far(current, other, background_cutoff)) {
+      continue;
     }
     d = danger_distance - distance_between(&(current->rect_params), &(other->rect_params));
     if (d > 0.0f) {

@@ -58,6 +58,12 @@ class DistanceFilter : public BaseFilter {
    */
   bool do_drawing;
   /**
+   * The height % difference between two bounding boxes after which a pair detection is ignored.
+   * 
+   * ignore = (abs(current->rect_params.height - other->rect_params.height) > current->rect_params.height * filter_height_diff)
+   */
+  float filter_height_diff;
+  /**
    * This implementation does drawing and analytics on NvDs Metadata.
    */
   virtual GstFlowReturn on_buffer(GstBuffer* buf);
