@@ -23,24 +23,21 @@
 
 #include "PyPayloadBroker.hpp"
 
-PyPayloadBroker::PyPayloadBroker() {
-  this->data = nullptr;
-}
-
 bool
 PyPayloadBroker::on_batch_payload(std::string* payload) {
   std::lock_guard<std::mutex> lock(this->data_lock);
-  strcpy(this->data, payload->data());
+  this->data = *payload;
   return true;
 }
 
 gchararray
 PyPayloadBroker::get_payload() {
-  std::lock_guard<std::mutex> lock(this->data_lock);
-  if (this->data == nullptr) {
+  if (this->data.empty()) {
     return nullptr;
   }
-  gchararray ret = nullptr;
-  strcpy(ret, this->data);
-  return (ret);
+  GST_WARNING("GET PAYLOAD COPYING STRING");
+  gchararray ret = (gchararray) malloc(this->data.length()+ 1);
+  this->data.copy(ret, this->data.length());
+  GST_WARNING("GET PAYLOAD STRING COPIED");
+  return ret;
 }

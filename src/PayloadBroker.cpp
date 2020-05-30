@@ -54,6 +54,10 @@ PayloadBroker::on_buffer(GstBuffer* buf)
 
     // call on_batch_payload with our string
     auto payload = (std::string*) user_meta->user_meta_data;
+    if (payload == nullptr) {
+      GST_WARNING("payload was NULL");
+      continue;
+    }
     if (!this->on_batch_payload(payload)) {
       continue;
     }
