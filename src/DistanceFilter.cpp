@@ -90,7 +90,7 @@ DistanceFilter::DistanceFilter() {
 GstFlowReturn
 DistanceFilter::on_buffer(GstBuffer* buf)
 {
-  float how_dangerous=0.0f;
+  float person_danger=0.0f;
   float color_val=0.0f;
 
   // GList of NvDsFrameMeta
@@ -118,12 +118,12 @@ DistanceFilter::on_buffer(GstBuffer* buf)
   NvDsObjectMeta* obj_meta = nullptr;
   // Nvidia BBox structure (for osd element)
   NvOSD_RectParams* rect_params = nullptr;
-  // NvOSD_TextParams* text_params;
+  // NvOSD_TextParams* text_params = nullptr;
 
   // our Batch level metadata
-  auto b_proto = new dp::Batch();
+  auto batch_proto = new dp::Batch();
   // attach it to nvidia user meta
-  user_meta->user_meta_data = (void*) b_proto;
+  user_meta->user_meta_data = (void*) batch_proto;
   user_meta->base_meta.meta_type = DF_USER_BATCH_META;
   user_meta->base_meta.copy_func = (NvDsMetaCopyFunc) copy_dp_batch_meta;
   user_meta->base_meta.release_func = (NvDsMetaReleaseFunc) release_dp_batch_meta;
@@ -143,10 +143,10 @@ DistanceFilter::on_buffer(GstBuffer* buf)
     }
 
     // our Frame level metadata
-    auto f_proto = b_proto->add_frames();
+    auto frame_proto = batch_proto->add_frames();
 
     // danger score for this frame
-    float f_danger = 0.0f;
+    float frame_danger = 0.0f;
 
     // for obj_meta in obj_meta_list
     for (l_obj = frame_meta->obj_meta_list; l_obj != nullptr;
@@ -158,31 +158,35 @@ DistanceFilter::on_buffer(GstBuffer* buf)
       }
 
       // our Person level metadata
-      dp::Person* p_proto = f_proto->add_people();
+      dp::Person* person_proto = frame_proto->add_people();
       // metadata for the person's bounding box
-      auto b_proto = new dp::BBox();
+      auto bb_proto = new dp::BBox();
 
       rect_params = &(obj_meta->rect_params);
       // text_params = &(obj_meta->text_params); // TODO(mdegans, osd labels?)
       // record the bounding box and set it on the person
-      b_proto->set_height(rect_params->height);
-      b_proto->set_left(rect_params->left);
-      b_proto->set_top(rect_params->top);
-      b_proto->set_width(rect_params->width);
-      p_proto->set_allocated_bbox(b_proto);
+      bb_proto->set_height(rect_params->height);
+      bb_proto->set_left(rect_params->left);
+      bb_proto->set_top(rect_params->top);
+      bb_proto->set_width(rect_params->width);
+      person_proto->set_allocated_bbox(bb_proto);
 
       // get how dangerous the object is as a float
-      how_dangerous = calculate_how_dangerous(
+      person_danger = calculate_how_dangerous(
           this->class_id, l_obj, rect_params->height);
       // set it on the person metadata
-      p_proto->set_danger_val(how_dangerous);
+      person_proto->set_danger_val(person_danger);
       // add it to the frame danger score
-      f_danger += how_dangerous;
+      frame_danger += person_danger;
 
       if (this->do_drawing) {
         // make the box opaque and red depending on the danger
-        color_val = (how_dangerous * 0.6f);
+        color_val = (person_danger * 0.6f);
         color_val = color_val < 0.6f ? color_val : 0.6f;
+
+        // gchararray display_text = nullptr;
+        // sprintf(display_text, "%.2f", person_danger);
+        // text_params->display_text = display_text;
 
         rect_params->border_width = 0;
         rect_params->has_bg_color = 1;
@@ -193,7 +197,7 @@ DistanceFilter::on_buffer(GstBuffer* buf)
       }
     }
     // set the sum danger for the frame
-    f_proto->set_sum_danger(f_danger);
+    frame_proto->set_sum_danger(frame_danger);
   }
   nvds_release_meta_lock(batch_meta);
   return GST_FLOW_OK;
