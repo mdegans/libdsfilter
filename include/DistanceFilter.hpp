@@ -38,20 +38,35 @@
 #include "BaseFilter.hpp"
 
 /**
+ *  distanceproto batch nvds user metadata type
+ */
+#define DF_USER_BATCH_META (nvds_get_user_meta_type((gchar*)"NVIDIA.NVINFER.USER_META"))
+
+/**
  * DistanceFilter modifies osd metadata to make closer objects red.
  */
 class DistanceFilter : public BaseFilter {
  public:
+  DistanceFilter();
+  virtual ~DistanceFilter() = default;
   /**
    * The class id to turn red.
    */
   int class_id;
   /**
-   * This class is for unit tests. It just passes the buffer through.
-   *
-   * Some info about the buffer is logged to the DEBUG level.
+   * Whether to set osd metadata for drawing.
    */
-  GstFlowReturn on_buffer(GstBuffer* buf);
+  bool do_drawing;
+  /**
+   * The height % difference between two bounding boxes after which a pair detection is ignored.
+   * 
+   * ignore = (abs(current->rect_params.height - other->rect_params.height) > current->rect_params.height * filter_height_diff)
+   */
+  float filter_height_diff;
+  /**
+   * This implementation does drawing and analytics on NvDs Metadata.
+   */
+  virtual GstFlowReturn on_buffer(GstBuffer* buf);
 };
 
 #endif  // DISTANCE_FILTER_HPP_

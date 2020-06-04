@@ -1,4 +1,4 @@
-/* BaseCudaFilter.cu
+/* PyPayloadBroker.cpp
  *
  * Copyright 2020 Michael de Gans <47511965+mdegans@users.noreply.github.com>
  *
@@ -21,18 +21,22 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
-#include "BaseCudaFilter.hpp"
+#include "PyPayloadBroker.hpp"
 
-#include "utils.hpp"
-
-// constructor and destructor:
-
-BaseCudaFilter::BaseCudaFilter() {
-  GST_DEBUG("BaseCudaFilter constructor. Creating CUDA stream.");
-  checkCuda(cudaStreamCreateWithFlags(&stream, cudaStreamNonBlocking));
-}
-BaseCudaFilter::~BaseCudaFilter() {
-  GST_DEBUG("BaseCudaFilter destroy. Destroying CUDA stream.");
-  checkCuda(cudaStreamDestroy(stream));
+bool
+PyPayloadBroker::on_batch_payload(std::string* payload) {
+  std::lock_guard<std::mutex> lock(this->data_lock);
+  this->data = *payload;
+  return true;
 }
 
+gchararray
+PyPayloadBroker::get_payload() {
+  if (this->data.empty()) {
+    return nullptr;
+  }
+  gchararray ret = (gchararray) malloc(this->data.length()+ 1);
+  this->data.copy(ret, this->data.length());
+  ret[this->data.length()] = '\0';
+  return ret;
+}
