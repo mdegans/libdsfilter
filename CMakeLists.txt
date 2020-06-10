@@ -55,6 +55,13 @@ TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES} nvds_meta nvdsgst_meta)
 
+# https://cliutils.gitlab.io/modern-cmake/chapters/testing/googletest.html
+OPTION(DSFILTER_TESTS "Build the tests" ON)
+IF(DSFILTER_TESTS)
+    ENABLE_TESTING()
+    ADD_SUBDIRECTORY(test)
+ENDIF()
+
 # generate and install pkg-config file
 # (holy crap this is easier than a .cmake)
 SET(DSFILTER_PC_NAME dsfilter-${DSFILTER_VERSION_MAJOR}.${DSFILTER_VERSION_MINOR}.pc)
