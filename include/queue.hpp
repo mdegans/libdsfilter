@@ -33,7 +33,7 @@
 namespace my {
 
 /**
- * A simple thread-safe queue.
+ * A simple, general purpose, thread-safe queue.
  */
 template <typename T>
 class Queue {
@@ -41,6 +41,7 @@ protected:
   std::deque<T> d;
   std::mutex mutex;
   std::condition_variable cv;
+  bool flushing;
 public:
   /**
    * Checks if the Queue is empty.
@@ -53,18 +54,38 @@ public:
    * Move an item into the queue. Does not block (no max size).
    */
   void put(T&& thing) {
+    std::unique_lock<std::mutex> lock(this->mutex);
     this->d.push_back(std::move(thing));
     this->cv.notify_one();
   }
   /**
-   * Get an item from the Queue. Blocks while the queue is empty.
+   * Get an item from the Queue. Blocks, even when empty, if flush has not yet
+   * been called.
+   * 
+   * returns nullptr when finished.
    */
   T get() {
     std::unique_lock<std::mutex> lock(this->mutex);
-    while (this->d.empty()) this->cv.wait(lock);
+    // wait while the queue is empty and we're not flushing
+    while (this->d.empty() && !this->flushing) {
+      this->cv.wait(lock);
+    }
+    // if the queue is empty, return nullptr.
+    // this seems to happen anyway but the behavior of
+    // front() from an empty deque is technically undefined
+    if (this->d.empty()) {
+      return nullptr;  // poison pill
+    }
     T ret = std::move(this->d.front());
     this->d.pop_front();
     return ret;
+  }
+  /**
+   * Stop waiting for a get()
+   */
+  void flush() {
+    this->flushing = true;
+    this->cv.notify_one();
   }
 };
 

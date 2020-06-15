@@ -10,65 +10,75 @@ namespace {
 
 // The fixture for testing class Queue.
 class QueueTest : public ::testing::Test {
- protected:
-  // You can remove any or all of the following functions if their bodies would
-  // be empty.
+public:
 
-  /**
-   * Items to put in the queue
-   */
-  std::vector<int> items_;
-  /**
-   * The actual queue
-   */
-  my::Queue<int> queue_;
+  my::Queue<std::unique_ptr<int>> queue_;
 
-  void SetUp() override {
+  void fill_queue() {
     for (size_t i = 0; i < 10; i++)
     {
-      items_.push_back(i);
+      std::unique_ptr<int> ptr(new int(i));
+      queue_.put(std::move(ptr));
     }
   }
- public:
   /**
-   * Consumes members from the queue, check expected item.
+   * Consumes first 10 members from the queue, check expected item.
    */
-  void consumer() {
-    for (auto i : items_)
-    {
-      ASSERT_EQ(i, std::move(queue_.get()));
+  void for_consumer() {
+    for (size_t i = 0; i < 10; i++) {
+      auto elem = std::move(queue_.get());
+      ASSERT_EQ(i, *elem);
+    }
+  }
+  /**
+   * Consumes members from the queue while(member).
+   */
+  void while_consumer() {
+    auto elem = std::move(queue_.get());
+    int i = 0;
+    while (elem) {
+      ASSERT_EQ(i, *elem);
+      i++;
+      elem = std::move(queue_.get());
     }
   }
 };
 
 // Test that the queue works in a single threaded environment.
 TEST_F(QueueTest, SingleThreadPutFirst) {
-  for (auto i : items_)
-  {
-    queue_.put(std::move(i));
-  }
-  for (auto i : items_)
-  {
-    ASSERT_EQ(i, std::move(queue_.get()));
-  }
+  fill_queue();
+  for_consumer();
 }
 
 // Test the Queue works in a multi-threaded environment by putting first.
 TEST_F(QueueTest, MultiThreadPutFirst) {
-  for (auto i : items_) {
-    queue_.put(std::move(i));
-  }
-  std::thread worker(&QueueTest::consumer, this);
+  fill_queue();
+  std::thread worker(&QueueTest::for_consumer, this);
   worker.join();
   ASSERT_TRUE(queue_.empty());
 }
 
 // Test the Queue works in a multi-threaded environment by getting first.
 TEST_F(QueueTest, MultiThreadGetFirst) {
-  std::thread worker(&QueueTest::consumer, this);
-  for (auto i : items_) {
-    queue_.put(std::move(i));
-  }
+  std::thread worker(&QueueTest::for_consumer, this);
+  fill_queue();
+  worker.join();
+  ASSERT_TRUE(queue_.empty());
+}
+
+// test the queue flush function flushes (this test needs improvement)
+TEST_F(QueueTest, FlushTest) {
+  fill_queue();
+  queue_.flush();
+  std::thread worker(&QueueTest::while_consumer, this);
+  worker.join();
+  ASSERT_TRUE(queue_.empty());
+}
+
+// test a while loop and the nullptr poison pill
+TEST_F(QueueTest, PoisonPillTest) {
+  fill_queue();
+  std::thread worker(&QueueTest::while_consumer, this);
   worker.join();
   ASSERT_TRUE(queue_.empty());
 }
