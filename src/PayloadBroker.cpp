@@ -21,6 +21,9 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
+// TODO(mdegans): think about merging ProtoPayloadFilter's conversion logic
+//  this.
+
 #include "PayloadBroker.hpp"
 #include "nvdsmeta.h"
 
@@ -46,23 +49,21 @@ PayloadBroker::on_buffer(GstBuffer* buf)
       GST_WARNING("empty meta found in GList");
       continue;
     }
-    // if the attached metadata is not ours, skip it
-    // this might break becuase i can't find any nvds_get_payload_meta_type
-    if (user_meta->base_meta.meta_type != NVDS_PAYLOAD_META) {
-      continue;
-    }
-
-    // call on_batch_payload with our string
-    auto payload = (std::string*) user_meta->user_meta_data;
-    if (payload == nullptr) {
-      GST_WARNING("payload was NULL");
-      continue;
-    }
-    if (!this->on_batch_payload(payload)) {
-      continue;
+    // please note that this won't currently work with the default
+    // message converter element without modification.
+    // if the attached metadata is already serialized
+    if (user_meta->base_meta.meta_type == NVDS_PAYLOAD_META) {
+      // call on_batch_payload with our string
+      auto payload = (std::string*) user_meta->user_meta_data;
+      if (payload == nullptr) {
+        GST_WARNING("payload was NULL");
+        continue;
+      }
+      if (!this->on_batch_payload(payload)) {
+        continue;
+      }
     }
   }
-
   nvds_release_meta_lock(batch_meta);
   return GST_FLOW_OK;
 }
