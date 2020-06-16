@@ -92,6 +92,7 @@ DistanceFilter::DistanceFilter() {
   this->filter_height_diff = DEFAULT_FILTER_HEIGHT_DIFF;
 }
 
+// TODO(mdegans): split this function up and clean it up
 GstFlowReturn
 DistanceFilter::on_buffer(GstBuffer* buf)
 {
