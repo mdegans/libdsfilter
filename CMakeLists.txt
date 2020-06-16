@@ -29,6 +29,7 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED
   src/BaseCudaFilter.cu
   src/BaseFilter.cpp
   src/DistanceFilter.cpp
+  src/FileMetaBroker.cpp
   src/HashCudaFilter.cpp
   src/PayloadBroker.cpp
   src/ProtoPayloadFilter.cpp
