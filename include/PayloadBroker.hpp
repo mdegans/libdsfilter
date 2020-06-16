@@ -15,10 +15,14 @@ public:
   /**
    * This implementation extracts metadata of type NVDS_PAYLOAD_META
    * from the user metadata list on batch_meta and calls on_batch with each.
+   * 
+   * note: the default implementation locks and unlocks the metadata, so care
+   *  should be taken to not acquire the lock again (deadloack) and not to do
+   *  anything blocking in the methods it calls below.
    */
   virtual GstFlowReturn on_buffer(GstBuffer* buf);
   /**
-   * Called by on_buffer when a distanceproto::Batch is found on the buffer.
+   * Called by on_buffer when a serialized payload is found on the buffer.
    * 
    * Returns true on success, false on failure.
    */
