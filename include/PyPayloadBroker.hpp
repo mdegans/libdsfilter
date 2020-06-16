@@ -13,8 +13,8 @@
  * PyPayloadBroker is a class designed to be used from other languages.
  * (not necessarily Python, but i'm feeling too lazy to rename at the moment)
  * 
- * It stores NVDS_PAYLOAD_META in gchararray and returns it on
- * request with get_payloads.
+ * It stores NVDS_PAYLOAD_META in a string and returns a null terminated char*
+ * copy with get_payload()
  */
 class PyPayloadBroker : public PayloadBroker {
 private:
