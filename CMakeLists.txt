@@ -43,7 +43,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION ${DSFILTER_VERSION_STRI
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 SET_TARGET_PROPERTIES(
   ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER 
-  "include/BaseFilter.hpp;include/DistanceFilter.hpp;include/BaseCudaFilter.hpp;include/TestCudaFilter.hpp;include/PayloadBroker.hpp;include/ProtoPayloadFilter.hpp;include/PyPayloadBroker.hpp"
+  "include/BaseFilter.hpp;include/DistanceFilter.hpp;include/BaseCudaFilter.hpp;include/TestCudaFilter.hpp;include/PayloadBroker.hpp;include/ProtoPayloadFilter.hpp;include/PyPayloadBroker.hpp;include/FileMetaBroker.hpp;include/queue.hpp"
 )
 
 TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
