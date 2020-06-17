@@ -92,6 +92,7 @@ DistanceFilter::DistanceFilter() {
   this->filter_height_diff = DEFAULT_FILTER_HEIGHT_DIFF;
 }
 
+// TODO(mdegans): split this function up and clean it up
 GstFlowReturn
 DistanceFilter::on_buffer(GstBuffer* buf)
 {
@@ -181,6 +182,10 @@ DistanceFilter::on_buffer(GstBuffer* buf)
           this->class_id, l_obj, this->filter_height_diff);
       // set it on the person metadata
       person_proto->set_danger_val(person_danger);
+      // TODO(mdegans): make this configurable
+      if (person_danger >= 1.0) {
+        person_proto->set_is_danger(true);
+      }
       // add it to the frame danger score
       frame_danger += person_danger;
 

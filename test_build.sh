@@ -1,1 +1,0 @@
-exec docker build --rm -f "test.Dockerfile" -t libdsfilter:dev "." 2>&1 | tee test_build.log

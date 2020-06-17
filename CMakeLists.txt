@@ -13,7 +13,9 @@ MESSAGE("${PROJECT_NAME} version: ${DSFILTER_VERSION_MAJOR}.${DSFILTER_VERSION_M
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-SET(CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_STANDARD 17)
+
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wshadow -Werror -fno-exceptions")
 
 FIND_PACKAGE(PkgConfig REQUIRED)
 PKG_CHECK_MODULES(GSTREAMER REQUIRED gstreamer-1.0)
@@ -29,6 +31,7 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED
   src/BaseCudaFilter.cu
   src/BaseFilter.cpp
   src/DistanceFilter.cpp
+  src/FileMetaBroker.cpp
   src/HashCudaFilter.cpp
   src/PayloadBroker.cpp
   src/ProtoPayloadFilter.cpp
@@ -54,6 +57,13 @@ TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
 )
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES} nvds_meta nvdsgst_meta)
+
+# https://cliutils.gitlab.io/modern-cmake/chapters/testing/googletest.html
+OPTION(DSFILTER_TESTS "Build the tests" ON)
+IF(DSFILTER_TESTS)
+    ENABLE_TESTING()
+    ADD_SUBDIRECTORY(test)
+ENDIF()
 
 # generate and install pkg-config file
 # (holy crap this is easier than a .cmake)
