@@ -32,6 +32,7 @@ COPY test ./test/
 RUN apt-get update && apt-get install -y --no-install-recommends \
         cmake \
         cuda-compiler-10-2 \
+        git \
         libglib2.0-dev \
         libgstreamer-plugins-base1.0-dev \
         libgstreamer1.0-dev \
@@ -46,5 +47,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get purge -y --autoremove \
         cmake \
         cuda-compiler-10-2 \
+        git \
         ninja-build \
     && rm -rf /var/lib/apt/lists/*
