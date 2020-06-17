@@ -42,6 +42,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && cd build \
     && cmake -GNinja .. \
     && ninja \
+    && ninja test \
     && ninja install \
     && ldconfig \
     && apt-get purge -y --autoremove \
