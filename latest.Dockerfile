@@ -17,7 +17,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-FROM registry.hub.docker.com/mdegans/libdistanceproto:deepstream
+ARG DISTANCEPROTO_TAG="UNSET (use docker_build.sh to build)"
+FROM registry.hub.docker.com/mdegans/libdistanceproto:${DISTANCEPROTO_TAG}
 
 ARG BUILD_DIR="/usr/local/src/dsfilter"
 
@@ -29,11 +30,12 @@ COPY test ./test/
 
 # install deps and create user
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        cmake \
+        cuda-compiler-10-2 \
         libglib2.0-dev \
         libgstreamer-plugins-base1.0-dev \
         libgstreamer1.0-dev \
         libprotobuf-dev \
-        cmake \
         ninja-build \
     && mkdir build \
     && cd build \
@@ -43,5 +45,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && ldconfig \
     && apt-get purge -y --autoremove \
         cmake \
+        cuda-compiler-10-2 \
         ninja-build \
     && rm -rf /var/lib/apt/lists/*
