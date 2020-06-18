@@ -6,6 +6,10 @@ set -ex
 readonly AUTHOR="mdegans"
 readonly PROJ_NAME="libdsfilter"
 
+# change this if you want to override the architecture (cross build)
+# this is untested and unsupported
+readonly ARCH="$(arch)"
+
 TAG_SUFFIX=$(git rev-parse --abbrev-ref HEAD)
 if [[ $TAG_SUFFIX == "master" ]]; then
     TAG_SUFFIX="latest"
@@ -19,16 +23,10 @@ readonly VERSION=$(head -n 1 $THIS_DIR/VERSION)
 readonly TAG_BASE="$AUTHOR/$PROJ_NAME"
 TAG_FULL="$TAG_BASE:$VERSION"
 
-# TODO(mdegans): using deepstream-$(arch) may be cleaner
-if [[ "$(arch)" == "aarch64" ]]; then
-    readonly DISTANCEPROTO_TAG="deepstream-tegra"
-    readonly TAG_SUFFIX="${TAG_SUFFIX}-tegra"
-    readonly TAG_FULL="${TAG_FULL}-tegra"
-else
-    readonly DISTANCEPROTO_TAG="deepstream-x86"
-    readonly TAG_SUFFIX="${TAG_SUFFIX}-x86"
-    readonly TAG_FULL="${TAG_FULL}-x86"
-fi
+
+readonly DISTANCEPROTO_TAG="deepstream-$ARCH"
+readonly TAG_SUFFIX="${TAG_SUFFIX}-$ARCH"
+readonly TAG_FULL="${TAG_FULL}-$ARCH"
 
 echo "Building $TAG_FULL from $DOCKERFILE"
 
