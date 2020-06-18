@@ -19,12 +19,13 @@ readonly DOCKERFILE_BASENAME="latest.Dockerfile"
 # https://stackoverflow.com/questions/59895/how-to-get-the-source-directory-of-a-bash-script-from-within-the-script-itself
 readonly THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 readonly DOCKERFILE="$THIS_DIR/$DOCKERFILE_BASENAME"
+readonly DISTANCEPROT0_VERSION="0.3.0"
 readonly VERSION=$(head -n 1 $THIS_DIR/VERSION)
 readonly TAG_BASE="$AUTHOR/$PROJ_NAME"
 TAG_FULL="$TAG_BASE:$VERSION"
 
 
-readonly DISTANCEPROTO_TAG="deepstream-$ARCH"
+readonly DISTANCEPROTO_TAG="$DISTANCEPROT0_VERSION-ds-$ARCH"
 readonly TAG_SUFFIX="${TAG_SUFFIX}-$ARCH"
 readonly TAG_FULL="${TAG_FULL}-$ARCH"
 
