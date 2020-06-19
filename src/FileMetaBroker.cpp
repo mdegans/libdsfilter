@@ -130,7 +130,7 @@ FileMetaBroker::csv_worker_func() {
     return;
   }
   // set the number of digits for floats
-  out << std::setprecision(3);
+  out << std::setprecision(3) << std::fixed;
   // wait for the first batch
   auto batch = std::move(queue_.get());
   while (batch) {
