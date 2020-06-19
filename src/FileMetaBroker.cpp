@@ -124,10 +124,14 @@ void
 FileMetaBroker::csv_worker_func() {
   GST_DEBUG("%s start", __func__);
   // output file opened for appending
-  std::ofstream out(get_filename().c_str(), std::ios::out | std::ios::app);
+  std::ofstream out(get_filename().c_str(), std::ios::out | std::ios::app | std::ios::ate);
   if (!out.is_open()) {
     GST_ERROR("failed to open %s", get_filename().c_str());
     return;
+  }
+  // if we are at the beginning of the file, write a header line
+  if (out.tellp() == 0) {
+    out << "Timestamp,DetectedObjects,ViolatingObjects,EnvironmentScore" << std::endl;
   }
   // set the number of digits for floats
   out << std::setprecision(3) << std::fixed;
