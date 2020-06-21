@@ -96,6 +96,15 @@ DistanceFilter::DistanceFilter() {
 GstFlowReturn
 DistanceFilter::on_buffer(GstBuffer* buf)
 {
+  /**
+   * https://gstreamer.freedesktop.org/documentation/gstreamer/gstbuffer.html
+   *
+   * If a plug-in wants to modify the buffer data or metadata in-place,
+   * it should first obtain a buffer that is safe to modify by using
+   * gst_buffer_make_writable.
+   */
+  gst_buffer_make_writable(buf);
+
   float person_danger=0.0f;
   float color_val=0.0f;
 
