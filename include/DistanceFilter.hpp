@@ -58,7 +58,7 @@ class DistanceFilter : public BaseFilter {
    */
   bool do_drawing;
   /**
-   * The height % difference between two bounding boxes after which a pair detection is ignored.
+   * The height % difference between two bounding boxes after which a pair detection is ignored. (defaults to 0.25)
    * 
    * ignore = (abs(current->rect_params.height - other->rect_params.height) > current->rect_params.height * filter_height_diff)
    */
