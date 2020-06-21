@@ -50,15 +50,15 @@ class DistanceFilter : public BaseFilter {
   DistanceFilter();
   virtual ~DistanceFilter() = default;
   /**
-   * The class id to turn red.
+   * The class id to turn red (default: 0).
    */
   int class_id;
   /**
-   * Whether to set osd metadata for drawing.
+   * Whether to set osd metadata for drawing (default: true).
    */
   bool do_drawing;
   /**
-   * The height % difference between two bounding boxes after which a pair detection is ignored. (defaults to 0.25)
+   * The height % difference between two bounding boxes after which a pair detection is ignored. (default: 0.25)
    * 
    * ignore = (abs(current->rect_params.height - other->rect_params.height) > current->rect_params.height * filter_height_diff)
    */
