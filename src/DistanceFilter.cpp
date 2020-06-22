@@ -96,6 +96,15 @@ DistanceFilter::DistanceFilter() {
 GstFlowReturn
 DistanceFilter::on_buffer(GstBuffer* buf)
 {
+  /**
+   * https://gstreamer.freedesktop.org/documentation/gstreamer/gstbuffer.html
+   *
+   * If a plug-in wants to modify the buffer data or metadata in-place,
+   * it should first obtain a buffer that is safe to modify by using
+   * gst_buffer_make_writable.
+   */
+  buf = gst_buffer_make_writable(buf);
+
   float person_danger=0.0f;
   float color_val=0.0f;
 
@@ -150,6 +159,11 @@ DistanceFilter::on_buffer(GstBuffer* buf)
 
     // our Frame level metadata
     auto frame_proto = batch_proto->add_frames();
+
+    // copy some frame meta
+    frame_proto->set_frame_num(frame_meta->frame_num);
+    frame_proto->set_pts(frame_meta->buf_pts);
+    frame_proto->set_dts(frame_meta->ntp_timestamp);
 
     // danger score for this frame
     float frame_danger = 0.0f;
