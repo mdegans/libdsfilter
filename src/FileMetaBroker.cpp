@@ -94,6 +94,39 @@ FileMetaBroker::proto_worker_func() {
   }
 }
 
+static const time_t*
+ns_to_time(const uint64_t ns) {
+  static time_t ret;
+  // std::chrono is spectacularly ugly
+  // why is it so hard to print a simple timestamp?
+  // in python this is 1-2 lines. in c++ every example is 40-50
+  auto timestamp = std::chrono::nanoseconds(ns);
+  auto seconds = std::chrono::duration_cast<std::chrono::seconds>(timestamp);
+  // this is implementation dependent and may be wrong on platforms
+  // where a time_t is not the seconds since the epoch, but wtf
+  // this is a giant turd in c++ (at least until the formatter in c++ 20)
+  ret = seconds.count();
+  return &ret;
+}
+
+
+/**
+ * Gets a std::tm struct for a frame timestamp.
+ * Tries the decoder timestamp first, then the playback timestamp, then
+ * falls back on the system local time as gmt.
+ */
+static const std::tm*
+frame_to_time(const dp::Frame& frame) {
+  if (frame.dts()) {
+    return std::gmtime(ns_to_time(frame.dts()));
+  }
+  if (frame.pts()) {
+    return std::gmtime(ns_to_time(frame.pts()));
+  }
+  auto now = std::time(nullptr);
+  return std::gmtime(&now);
+}
+
 /**
  * Write a dp::Frame to a csv output stream in the format expected by
  * neuralet/smart_distancing:
@@ -115,8 +148,10 @@ frame_to_csv(const dp::Frame& frame, std::ostream& out) {
     const dp::Person& person = frame.people(i);
     if (person.is_danger()) violating++;
   }
-  auto time = std::time(nullptr);
-  out << std::put_time(std::localtime(&time), FileMetaBroker::CSV_TIME_FMT)
+  // this is because std::gmtime and friends are not thread safe
+  static std::mutex timelock;
+  std::lock_guard lock(timelock);
+  out << std::put_time(frame_to_time(frame), FileMetaBroker::CSV_TIME_FMT)
     << "," << frame.people_size() << "," << violating << "," << score << "\n";
 }
 
