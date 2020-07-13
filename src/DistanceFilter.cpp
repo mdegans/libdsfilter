@@ -49,6 +49,8 @@ namespace dp = distanceproto;
 static const bool DEFAULT_DO_DRAWING=false;
 static const float DEFAULT_FILTER_HEIGHT_DIFF=0.25f;
 static const float DEFAULT_CLASS_ID=0;
+static const int OBJ_LABEL_MAX_LEN=8;
+// static const int FRAME_LABEL_MAX_LEN=16;
 
 /**
  * Calculate how dangerous a list element is based on proximity to other
@@ -183,7 +185,7 @@ DistanceFilter::on_buffer(GstBuffer* buf)
       auto bb_proto = new dp::BBox();
 
       rect_params = &(obj_meta->rect_params);
-      // text_params = &(obj_meta->text_params); // TODO(mdegans, osd labels?)
+      text_params = &(obj_meta->text_params); // TODO(mdegans, osd labels?)
       // record the bounding box and set it on the person
       bb_proto->set_height(rect_params->height);
       bb_proto->set_left(rect_params->left);
@@ -196,6 +198,12 @@ DistanceFilter::on_buffer(GstBuffer* buf)
           this->class_id, l_obj, this->filter_height_diff);
       // set it on the person metadata
       person_proto->set_danger_val(person_danger);
+      // set it on the osd metadata
+      g_free(text_params->display_text);
+      text_params->display_text = (gchararray) g_malloc0(OBJ_LABEL_MAX_LEN);
+      snprintf(
+        text_params->display_text, OBJ_LABEL_MAX_LEN, "%.2f", person_danger);
+
       // TODO(mdegans): make this configurable
       if (person_danger >= 1.0) {
         person_proto->set_is_danger(true);
