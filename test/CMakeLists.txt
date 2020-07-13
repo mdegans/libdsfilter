@@ -16,7 +16,13 @@ ADD_GTEST(test_queue)
 # test the file meta broker
 ADD_EXECUTABLE(test_filemetabroker test_FileMetaBroker.cpp)
 TARGET_LINK_LIBRARIES(test_filemetabroker PRIVATE
-  ${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES} stdc++fs nvds_meta nvdsgst_meta)
+  ${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES}
+  stdc++fs
+  nvds_meta
+  nvdsgst_meta
+  nvbufsurface
+  nvbufsurftransform
+)
 TARGET_INCLUDE_DIRECTORIES(test_filemetabroker PRIVATE
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/googletest-src/googletest/include/>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
