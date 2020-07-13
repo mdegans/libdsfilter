@@ -7,5 +7,5 @@ Description: A simple library to build CUDA DeepStream filters.
 URL: https://github.com/mdegans/libdsfilter
 Version: @DSFILTER_VERSION_STRING@
 Requires: glib-2.0 >= 2.50, gobject-2.0 >= 2.0, gstreamer-1.0 >= 1.0, distanceproto-0.3 >= 0.3
-Libs: -L${libdir} -l@PROJECT_NAME@ -L/opt/nvidia/deepstream/deepstream/lib -lnvds_meta -lnvdsgst_meta -lnvbufsurface -lnvbufsurftransform
+Libs: -L${libdir} -l@PROJECT_NAME@ -L/opt/nvidia/deepstream/deepstream/lib -lnvds_meta -lnvdsgst_meta
 Cflags:-I${includedir} -I/opt/nvidia/deepstream/deepstream/sources/includes

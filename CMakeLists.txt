@@ -32,7 +32,6 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED
   src/BaseFilter.cpp
   src/DistanceFilter.cpp
   src/FileMetaBroker.cpp
-  src/HashCudaFilter.cpp
   src/PayloadBroker.cpp
   src/ProtoPayloadFilter.cpp
   src/PyPayloadBroker.cpp
@@ -59,8 +58,6 @@ TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES}
   nvds_meta
   nvdsgst_meta
-  nvbufsurface
-  nvbufsurftransform
 )
 
 # https://cliutils.gitlab.io/modern-cmake/chapters/testing/googletest.html

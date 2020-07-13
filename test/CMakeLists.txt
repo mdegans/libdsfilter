@@ -20,8 +20,6 @@ TARGET_LINK_LIBRARIES(test_filemetabroker PRIVATE
   stdc++fs
   nvds_meta
   nvdsgst_meta
-  nvbufsurface
-  nvbufsurftransform
 )
 TARGET_INCLUDE_DIRECTORIES(test_filemetabroker PRIVATE
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/googletest-src/googletest/include/>
