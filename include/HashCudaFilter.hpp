@@ -4,27 +4,65 @@
 #pragma once
 
 #include "BaseCudaFilter.hpp"
+#include "nvbufsurftransform.h"
 
-typedef char Hash[64];
-typedef char SmHash[16];
+/**
+ *  frame level hash user meta type
+ */
+#define HASH_USER_FRAME_META (nvds_get_user_meta_type((gchar*)"NVIDIA.NVINFER.USER_META"))
 
 /**
  * HashCudaFilter hashes.
  */
 class HashCudaFilter : public BaseCudaFilter {
-private:
-  Hash& hash;
-  SmHash& sm_hash;
+protected:
+  /** The per-session transform config */
+  NvBufSurfTransformConfigParams* config;
+  /** The per-frame transform config */
+  NvBufSurfTransformParams* params;
+
+  /** A temporary surface */
+  NvBufSurface* tmp_surface;
+  /** creation parameters for the temp surface **/
+  NvBufSurfaceCreateParams* create_params;
+  /**
+   * Resets the temporary surface
+   */
+  virtual bool create_tmp_surface(const NvBufSurface* surf);
+  /**
+   * Sets the NvBufSurfTransformRect lists appropriately.
+   */
+  virtual bool set_tx_rects(NvBufSurface* surf);
 public:
   HashCudaFilter();
-  virtual ~HashCudaFilter() = default;
+  virtual ~HashCudaFilter();
   /**
-   * on_frame calculates a simple image hash for each frame
+   * Called on every NVMM batched buffer.
+   *
+   * calculates a hash for each frame in the the batch and attaches it
+   *  
+   *
+   * return a GstFlowReturn (success, failure, etc.)
    */
-  virtual bool on_frame(NvBufSurface* surf, NvDsFrameMeta* frame_meta);
-
-  const Hash& getHash() const { return hash; };
-  const SmHash& getSmHash() const { return sm_hash; }
+  virtual GstFlowReturn on_buffer(GstBuffer* buf);
+  /**
+   * Hash a batch of frames and attach the hash as HASH_USER_BATCH_META.
+   * 
+   * return false on failure.
+   */
+  virtual bool on_batch(NvBufSurface* surf, NvDsBatchMeta* batch_meta);
+  /**
+   * Hash height (in pixels).
+   */
+  static const int HEIGHT=8;
+  /**
+   * Hash width (in pixels).
+   */
+  static const int WIDTH=8;
+  /**
+   * Size of a hash in bytes.
+   */
+  static const int SIZE=WIDTH*HEIGHT;
 };
 
 #endif  // TEST_CUDA_FILTER_HPP_

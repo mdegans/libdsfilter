@@ -28,7 +28,7 @@ LINK_DIRECTORIES(/opt/nvidia/deepstream/deepstream/lib/)
 # it would be appreciated.
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED
-  src/BaseCudaFilter.cu
+  src/BaseCudaFilter.cpp
   src/BaseFilter.cpp
   src/DistanceFilter.cpp
   src/FileMetaBroker.cpp
