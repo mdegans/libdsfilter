@@ -152,7 +152,8 @@ frame_to_csv(const dp::Frame& frame, std::ostream& out) {
   static std::mutex timelock;
   std::lock_guard lock(timelock);
   out << std::put_time(frame_to_time(frame), FileMetaBroker::CSV_TIME_FMT)
-    << "," << frame.people_size() << "," << violating << "," << score << "\n";
+    << "," << frame.people_size() << "," << violating << "," << score
+    << "," << frame.source_id() << "\n";
 }
 
 void
@@ -166,7 +167,7 @@ FileMetaBroker::csv_worker_func() {
   }
   // if we are at the beginning of the file, write a header line
   if (out.tellp() == 0) {
-    out << "Timestamp,DetectedObjects,ViolatingObjects,EnvironmentScore" << std::endl;
+    out << "Timestamp,DetectedObjects,ViolatingObjects,EnvironmentScore,SourceID" << std::endl;
   }
   // set the number of digits for floats
   out << std::setprecision(3) << std::fixed;

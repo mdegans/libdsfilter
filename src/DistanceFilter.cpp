@@ -230,6 +230,8 @@ DistanceFilter::on_buffer(GstBuffer* buf)
     }
     // set the sum danger for the frame
     frame_proto->set_sum_danger(frame_danger);
+    // set the origin id
+    frame_proto->set_source_id(frame_meta->source_id);
   }
   nvds_release_meta_lock(batch_meta);
   return GST_FLOW_OK;

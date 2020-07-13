@@ -56,7 +56,12 @@ TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC
   ${DISTANCEPROTO_INCLUDE_DIRS}
 )
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES} nvds_meta nvdsgst_meta)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GSTREAMER_LIBRARIES} ${DISTANCEPROTO_LIBRARIES}
+  nvds_meta
+  nvdsgst_meta
+  nvbufsurface
+  nvbufsurftransform
+)
 
 # https://cliutils.gitlab.io/modern-cmake/chapters/testing/googletest.html
 OPTION(DSFILTER_TESTS "Build the tests" ON)
