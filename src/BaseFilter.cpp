@@ -102,8 +102,8 @@ bool BaseFilter::on_frame(NvBufSurface* surf, NvDsFrameMeta* frame_meta) {
 }
 
 bool BaseFilter::on_object(NvDsFrameMeta* f_meta,
-                               NvDsObjectMeta* o_meta,
-                               NvBufSurfaceParams* frame) {
+                           NvDsObjectMeta* o_meta,
+                           NvBufSurfaceParams* frame) {
   GST_LOG("BaseFilter::on_object:got frame %d", f_meta->frame_num);
   GST_LOG("BaseFilter::on_object:surface color format: %d",
           frame->colorFormat);
