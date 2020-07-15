@@ -44,6 +44,9 @@ GstFlowReturn BaseFilter::on_buffer(GstBuffer* buf) {
 
   // get the batch metadata from the buffer
   batch_meta = gst_buffer_get_nvds_batch_meta(buf);
+  // we need to lock the metadata
+  nvds_acquire_meta_lock(batch_meta);
+
   GST_LOG("on_buffer:got batch with %d frames.",
           batch_meta->num_frames_in_batch);
 
@@ -53,14 +56,19 @@ GstFlowReturn BaseFilter::on_buffer(GstBuffer* buf) {
     frame_meta = (NvDsFrameMeta*)l_frame->data;
     if (frame_meta == nullptr) {
       GST_ERROR("on_buffer:frame_meta is NULL");
+      // release lock before return
+      nvds_release_meta_lock(batch_meta);
       return GST_FLOW_ERROR;
     }
 
     if (!on_frame(surf, frame_meta)) {
+      // release lock before return
+      nvds_release_meta_lock(batch_meta);
       return GST_FLOW_ERROR;
     };
   }
-
+  // release lock before return
+  nvds_release_meta_lock(batch_meta);
   return GST_FLOW_OK;
 }
 
